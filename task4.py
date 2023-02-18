@@ -3,20 +3,20 @@ import subprocess
 from pathlib import Path
 import os
 
-command = shlex.split(input().replace("\\", "/"))
-print(command)
+# command = shlex.split(input().replace("\\", "/"))
+# print(command)
 pth = Path(input())
 
 start = "726cf794aba820f9a1941acde5142f6f8f59c70c"
 end = "97149701edbc224d54def2f1fcbd377f0d693da3"
 
 
-def git_bisect(cmd, start_hash, end_hash, path):
+def get_commits(path):
     os.chdir(path)
     info = subprocess.getstatusoutput("git log")
     assert info[0] == 0
     info = info[1].split()
-
+    print(info)
     commits_hashes = []
 
     for i in range(1, len(info) - 1):
@@ -24,13 +24,17 @@ def git_bisect(cmd, start_hash, end_hash, path):
             commits_hashes.append(info[i])
     commits_hashes.reverse()
 
-    left = commits_hashes.index(start_hash)
-    right = commits_hashes.index(end_hash)
-    os.chdir("..")
+    return commits_hashes
 
+
+def git_bisect(cmd, start_hash, end_hash, path):
+    os.chdir("..")
+    commits_hashes = get_commits(path)
+    left = start_hash
+    right = end_hash
     while left != right:
         ind_curr_commit = (left + right) // 2
-        subprocess.run(f"git checkout {commits_hashes[ind_curr_commit]}", text=True)
+        subprocess.run(f"git checkout {commits_hashes[ind_curr_commit]}")
         if subprocess.run(cmd).returncode != 0:
             right = ind_curr_commit - 1
         else:
@@ -42,4 +46,4 @@ def git_bisect(cmd, start_hash, end_hash, path):
     return commits_hashes[left]
 
 
-print(git_bisect(command, start, end, pth))
+print(get_commits(pth))
