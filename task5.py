@@ -19,7 +19,7 @@ def shell_sort(array):
     pass
 
 
-def hIndex(self, citations: List[int]) -> int:
+def h_index(self, citations):
     shell_sort(citations)
     citations.reverse()
 

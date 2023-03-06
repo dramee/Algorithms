@@ -45,5 +45,5 @@ def sol_for_leet(arr):
     for i in range(len(arr)):
         if i - arr[i] > 1 or i - arr[i] < -1:
             return False
-        
+
     return True
