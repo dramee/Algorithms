@@ -1,5 +1,8 @@
 import numpy as np
 from functools import partial
+from format_table import format_table
+import time
+from collections import namedtuple
 
 matrix_extend = partial(np.pad, pad_width=(1, 0), constant_values=0)
 
@@ -7,7 +10,7 @@ matrix_extend = partial(np.pad, pad_width=(1, 0), constant_values=0)
 def matrices_mult(matrix1, matrix2):
 
     dim = np.shape(matrix1)[0]
-    new_matrix = np.zeros(dim)
+    new_matrix = np.zeros(shape=(dim, dim))
 
     for i in range(dim):
         for j in range(dim):
@@ -106,9 +109,85 @@ def matrix_equal(matrix1, matrix2):
     return True
 
 
-for i1 in range(20):
-    m1 = [[np.random.randint(0, 200) for i in range(20)] for j in range(20)]
-    m2 = [[np.random.randint(0, 200) for k in range(20)] for t in range(20)]
-    m1, m2 = map(np.matrix, [m1, m2])
-    assert matrix_equal(np.dot(m1, m2), strassen_algorithm(m1, m2))
+def fill_matrix_random(matrix):
+    dim = np.shape(matrix)[0]
+    for x in range(dim):
+        for y in range(dim):
+            matrix[x, y] = np.random.randint(0, 200)
+    pass
 
+
+def matrix_generate(dim):
+    m1 = np.zeros((dim, dim))
+    m2 = np.zeros((dim, dim))
+    fill_matrix_random(m1)
+    fill_matrix_random(m2)
+    return m1, m2
+
+
+
+
+
+def mult(array):
+    res = 1
+    for el in array:
+        if el != 0:
+            res *= el
+    return res
+
+
+def stat_count(results):
+    geometric_mean = mult(results) ** (1 / len(results))
+    mean = sum(results) / len(results)
+    std_deviation = np.sqrt(sum(list(map(lambda x: (mean - x) ** 2, results))) / len(results))
+    res = namedtuple("Stat", ["geometric_mean", "mean", "std_deviation"])
+    res.geometric_mean = geometric_mean
+    res.mean = mean
+    res.std_deviation = std_deviation
+    return res
+
+
+TEST_COUNT = 5
+
+
+def timer(funcs, test_data):
+    results = {}
+    for func in funcs:
+        for data in test_data:
+            stopwatch = []
+            for i in range(TEST_COUNT):
+                start = time.time()
+                func(*data)
+                end = time.time()
+                stopwatch.append(end - start)
+            stats = stat_count(stopwatch)
+            stats = f"gm: {stats.geometric_mean} mn: {stats.mean}, dev: {stats.std_deviation}"
+            if func.__name__ in results.keys():
+                results[func.__name__][str(np.shape(data[0]))] = stats
+            else:
+                results[func.__name__] = {}
+                results[func.__name__][str(np.shape(data[0]))] = stats
+    return results
+
+
+data = []
+
+for i in range(800, 1000, 50):
+    data.append(list(matrix_generate(i)))
+
+
+res = timer([matrices_mult, recursive_matrix_mult, strassen_algorithm], data)
+algos = list(res.keys())
+benchmarks = list(res["matrices_mult"].keys())
+results = []
+
+for benchmark in benchmarks:
+    tmp = []
+    for alg in algos:
+        tmp.append(res[alg][benchmark])
+    results.append(tmp)
+
+
+print(res)
+
+format_table(benchmarks, algos, results)
