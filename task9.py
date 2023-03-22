@@ -147,7 +147,7 @@ def stat_count(results):
     return res
 
 
-TEST_COUNT = 5
+TEST_COUNT = 1
 
 
 def timer(funcs, test_data):
@@ -172,13 +172,14 @@ def timer(funcs, test_data):
 
 data = []
 
-for i in range(800, 1000, 50):
-    data.append(list(matrix_generate(i)))
+data.append(list(matrix_generate(1024)))
+# for i in range(800, 1000, 50):
+#     data.append(list(matrix_generate(i)))
 
 
-res = timer([matrices_mult, recursive_matrix_mult, strassen_algorithm], data)
+res = timer([strassen_algorithm], data)
 algos = list(res.keys())
-benchmarks = list(res["matrices_mult"].keys())
+benchmarks = list(res["strassen_algorithm"].keys())
 results = []
 
 for benchmark in benchmarks:
