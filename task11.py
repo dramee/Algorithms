@@ -10,10 +10,11 @@ def swap(array, i, j):
 def flag(array):
     i = k = 0
     j = len(array) - 1
-    while k <= j and i < len(array):
+    while k <= j:
         if array[k] == 0:
             swap(array, i, k)
             i += 1
+            k += 1
         elif array[k] == 2:
             swap(array, j, k)
             j -= 1
@@ -21,7 +22,7 @@ def flag(array):
             k += 1
 
 
-test = [randint(0, 2) for _ in range(128)]
+test = [2, 0, 2, 1, 1, 0]
 print(test)
 
 flag(test)
