@@ -20,9 +20,8 @@ def radix_sort(array):
     return array
 
 
+test = ["abdqdq", "ackfgd", "cd213a", "bdeqrq", "efeqwe"]
 
-array = ["abdqdq", "ackfgd", "cd213a", "bdeqrq", "efeqwe"]
+test = radix_sort(test)
 
-array = radix_sort(array)
-
-print(array, sorted(array))
+print(test, sorted(test))
