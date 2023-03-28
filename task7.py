@@ -26,7 +26,7 @@ def merge(array, start1, end1, start2, end2, buff_ind):
         start2 += 1
         buff_ind += 1
 
-def sort_range(array, l, r, buff_ind)
+def sort_range(array, l, r, buff_ind):
 
     mid = l + (r - l) // 2
 
