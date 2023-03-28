@@ -18,18 +18,20 @@ def partition(array, l, r):
     return p
 
 
-def quick_sort(array, l, r):
-    if r < l:
-        return
+def quick_sort_k(array, l, r, k):
+    if l - r == 1:
+        return array[0]
     p = partition(array, l, r)
-    quick_sort(array, l, p - 1)
-    quick_sort(array, p + 1, r)
+    if k == p:
+        return array[p]
+    if k < p:
+        return quick_sort_k(array, l, p - 1, k)
+    else:
+        return quick_sort_k(array, p + 1, r, k)
 
 
-test = [randint(0, 100) for _ in range(1024)]
-test_copy = test.copy()
-print(test)
+test = [3, 2, 1, 5, 6, 4]
 
-quick_sort(test, 0, len(test) - 1)
+kth = quick_sort_k(test, 0, len(test) - 1, 0)
 
-print(test == sorted(test_copy))
+print(kth)
