@@ -26,59 +26,23 @@ def merge(array, start1, end1, start2, end2, buff_ind):
         start2 += 1
         buff_ind += 1
 
-def sort_range(array, l, r, buff_ind):
 
-    mid = l + (r - l) // 2
+def merge_sort_impl(array, r, l, buff_ind=None):
 
-    sort_range(array, l, mid, buff_ind)
-    sort_range(array,)
+    mid = (l + r) // 2
+
+    merge_sort_impl(array, l, mid, mid + 1)
+    merge_sort_impl(array, l, mid)
+    merge(array, l, mid, mid + 1, r, buff_ind)
 
 
 def merge_sort_inplace(array, l, r):
-    if r - l - 1 <= 1:
-        return
 
-    # if r - l - 1 == 2:
-    #     if array[l] > array[r]:
-    #         array[l], array[r] = array[r], array[l]
 
-    else:
 
-        unsorted = l + (r - l) // 2
 
-        buff = unsorted
-        if (r - l) % 2 == 1:
-            buff += 1
 
-        mid = l + (unsorted - l) // 2
-        merge_sort_inplace(array, l, mid)
-        merge_sort_inplace(array, mid, unsorted)
-        merge(array, l, mid, mid, unsorted, buff)
-        print(array)
 
-        unsorted = buff
-        while unsorted - l >= 2:
-            mid = l + (unsorted - l) // 2
-
-            buff = mid
-            if (unsorted - l) % 2 == 1:
-                buff += 1
-
-            merge_sort_inplace(array, l, mid)
-            merge(array, l, mid, unsorted, r, buff)
-            print(array)
-
-            unsorted = buff
-
-    i = 0
-    while l + i + 1 < r and array[l + i] > array[l + i + 1]:
-        array[l + i], array[l + i + 1] = array[l + i + 1], array[l + i]
-        i += 1
-
-    i = 0
-    # while r - i - 1 > l and array[r - i] < array[r - i - 1]:
-    #     array[r - i], array[r - i - 1] = array[r - i - 1], array[r - i]
-    #     i += 1
 
 # # l, mid, mid + 1, r,buff,nums
 # def merge(l1, r1, buff_l, buff_r, l2, r2, nums, is_merge_buff):
