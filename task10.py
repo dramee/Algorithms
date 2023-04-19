@@ -1,14 +1,16 @@
+N = 128
+
 def radix_sort(array):
 
     length = len(array[0])
 
     for i in range(length - 1, -1, -1):
         buff = ["" for _ in range(len(array))]
-        symbols = [0 for _ in range(128)]
+        symbols = [0 for _ in range(N)]
         for j in range(len(array)):
             symbols[ord(array[j][i])] += 1
 
-        for k in range(1, 128):
+        for k in range(1, N):
             symbols[k] += symbols[k - 1]
 
         for j in range(len(array) - 1, -1, -1):
