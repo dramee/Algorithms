@@ -153,12 +153,12 @@ heap = MinHeap([node for node in lists])
 
 new_list = ListNode()
 head = new_list
-count = 0
+first = False
 while heap.data:
     tmp = heap.extract_min()
-    if not count:
+    if not first:
         head.val = tmp.val
-        count = 1
+        first = True
     else:
         head.nxt = tmp
         head = head.nxt
