@@ -94,23 +94,17 @@ def get_size_and_quantity(max_quant_el, probability):
     return b * max_quant_el, math.ceil(math.log(2) * b)
 
 
-DIM = 20
-PROBABILITY = 0.001
+DIM = 100
+PROBABILITY = 0.99999999
 
-ip_arr1 = [IP(s) for s in "28.84.68.8, 252.248.87.43, 167.129.44.17," 
-                          " 248.32.239.250, 22.92.101.97, 123.235.24.124, 143.188.167.22, 109.46.102.113".split(",")]
-# ip_arr2 = []
-#
+# ip_arr1 = [IP(s) for s in "28.84.68.8, 252.248.87.43, 167.129.44.17,"
+#                           "248.32.239.250, 22.92.101.97, 123.235.24.124, 143.188.167.22, 109.46.102.113".split(",")]
 
-#
-# for i in range(DIM):
-#     new_item = IP(f"{randint(0, 255)}.{randint(0, 255)}.{randint(0, 255)}.{randint(0, 255)}")
-#     ip_arr2.append(new_item)
-#
-# print(ip_arr2)
+ip_arr2 = [IP(f"{randint(0, 255)}.{randint(0, 255)}.{randint(0, 255)}.{randint(0, 255)}") for i in range(DIM)]
 
 size, quant = get_size_and_quantity(DIM, PROBABILITY)
 
+print(quant)
 hash_funcs = []
 for i in range(quant):
     hash_funcs.append(get_rand_hash_func(size))
@@ -118,13 +112,29 @@ for i in range(quant):
 
 fil = BF(dim=size, funcs=hash_funcs)
 
-for el in ip_arr1:
+for el in ip_arr2:
     fil.insert(el)
 
 
-for el in ip_arr1:
-    print(fil.lookup(el))
+N = DIM
 
-for i in range(10000):
-    if fil.lookup(IP("1.1.1.1")):
-        print("OMG")
+i = 0
+wrong_ip = []
+while i < N:
+    i1 = randint(0, 255)
+    i2 = randint(0, 255)
+    i3 = randint(0, 255)
+    i4 = randint(0, 255)
+    ip = IP(".".join(map(str, [i1, i2, i3, i4])))
+    if ip not in ip_arr2:
+        wrong_ip.append(ip)
+        i += 1
+
+misses = 0
+for i in range(N):
+    if fil.lookup(wrong_ip[i]):
+        misses += 1
+    # print(fil.lookup(wrong_ip[i]))
+
+
+print(misses)
