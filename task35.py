@@ -78,6 +78,7 @@ test3 = "[7: 24, 6: 125, 3: 56, 2: 117, 3: 44, 5: 41, 3: 31, 7: 37, 5: 106, 5: 4
 
 test3 = frm_str(test3)
 
+
 # decorator for check time
 def timer(func):
     def wrapper(*args, **kwargs):
@@ -159,6 +160,10 @@ def solution(tasks):
                     ind -= 1
                 ans[ind] = task
     return ans, pen
+
+# TODO:
+def incorrect(tasks):
+    pass
 
 
 tests = [test1, test2] + [[Task(randint(1, 8), randint(20, 150)) for i in range(j)]
