@@ -98,7 +98,7 @@ def timer(func):
     return wrapper
 
 
-@timer
+# @timer
 def solution_with_uf(tasks):
     tasks.sort(key=lambda tsk: tsk.penalty, reverse=True)
     uf = UnionFind()
@@ -115,7 +115,7 @@ def solution_with_uf(tasks):
             ind = uf.find(ind)
             # if > 0 - we can write task to this day
             if ind > 0:
-                ind -= 1 # it needs for opportunity to use "union" in general situations
+                ind -= 1  # it needs for opportunity to use "union" in general situations
                 ans[ind] = task
             # else we have penalty and will make task at the end
             else:
@@ -138,7 +138,7 @@ def solution_with_uf(tasks):
     return ans, pen
 
 
-@timer
+# @timer
 def solution(tasks):
     # nothing interesting
     tasks.sort(key=lambda tsk: tsk.penalty, reverse=True)
@@ -161,9 +161,16 @@ def solution(tasks):
                 ans[ind] = task
     return ans, pen
 
+
 # TODO:
+
 def incorrect(tasks):
-    pass
+    tasks.sort(key=lambda x: x.penalty, reverse=True)
+    pen = 0
+    for i in range(len(tasks)):
+        if tasks[i].deadline > i + 1:
+            pen += tasks[i].penalty
+    return pen
 
 
 tests = [test1, test2] + [[Task(randint(1, 8), randint(20, 150)) for i in range(j)]
@@ -171,13 +178,16 @@ tests = [test1, test2] + [[Task(randint(1, 8), randint(20, 150)) for i in range(
 
 number = 0
 for test in tests:
-    print(number, sep=" ")
+    print(number, end=": ")
     # print(test)
     test_c = test.copy()
     res1 = solution_with_uf(test)
-    res2 = solution(test_c)
+    res2 = incorrect(test_c)
     # print(res1, res2, sep="\n")
-    assert res1 == res2
+    if res1 != res2:
+        print("False")
+    else:
+        print("True")
     number += 1
 
 # print(solution_with_uf(test3))
