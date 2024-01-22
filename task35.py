@@ -4,8 +4,10 @@ from random import randint
 
 class UnionFind:
 
-    def __init__(self):
-        self.set = None
+    def __init__(self, amount):
+        self.set = [i for i in range(amount)]
+        self.ranks = [0 for i in range(amount)]
+        self.bounds = self.set
 
     def find(self, x):
         # save indexes to rewrite
@@ -28,10 +30,14 @@ class UnionFind:
         b = self.find(y)
         if a != b:
             # connect right part to left
-            if x < y:
-                self.set[y] = a
-            else:
-                self.set[x] = b
+            self.bounds[a] = self.bounds[b] = min(self.bounds[a], self.bounds[b])
+
+            if self.ranks[a] > self.ranks[b]:
+                self.set[b] = a
+            else:  # member_2.rank <= member_1.rank
+                self.set[a] = b
+                if self.ranks[a] == self.ranks[b]:
+                    self.ranks[b] += 1
 
 
 class Task:
@@ -58,20 +64,20 @@ def frm_str(s):
 
 
 # funcs for check default test
-def dec_dls(tasks: list):
-    for task in tasks:
-        task.deadline -= 1
-    pass
+# def dec_dls(tasks: list):
+#     for task in tasks:
+#         task.deadline -= 1
+#     pass
+#
+#
+# # def inc_dls(tasks: list):
+# #     for task in tasks:
+# #         task.deadline += 1
+# #     pass
 
 
-def inc_dls(tasks: list):
-    for task in tasks:
-        task.deadline += 1
-    pass
-
-
-test1 = [Task(3, 25), Task(4, 10), Task(1, 30), Task(3, 50), Task(3, 20)]
-dec_dls(test1)
+test1 = [Task(2, 25), Task(3, 10), Task(0, 30),
+         Task(2, 50), Task(2, 20)]
 test2 = [Task(3, i) for i in range(100)]
 test3 = "[7: 24, 6: 125, 3: 56, 2: 117, 3: 44, 5: 41, 3: 31, 7: 37, 5: 106, 5: 49, 8: 114, 5: 117, 5: 123, 4: 68," \
         " 6: 76]"
@@ -79,29 +85,9 @@ test3 = "[7: 24, 6: 125, 3: 56, 2: 117, 3: 44, 5: 41, 3: 31, 7: 37, 5: 106, 5: 4
 test3 = frm_str(test3)
 
 
-# decorator for check time
-def timer(func):
-    def wrapper(*args, **kwargs):
-        # start the timer
-        start_time = time.time()
-        # call the decorated function
-        result = func(*args, **kwargs)
-        # remeasure the time
-        end_time = time.time()
-        # compute the elapsed time and print it
-        execution_time = end_time - start_time
-        print(f"Execution time of \"{func.__name__}\": {execution_time:.20f} seconds")
-        # return the result of the decorated function execution
-        return result
-
-    # return reference to the wrapper function
-    return wrapper
-
-
-# @timer
 def solution_with_uf(tasks):
     tasks.sort(key=lambda tsk: tsk.penalty, reverse=True)
-    uf = UnionFind()
+    uf = UnionFind(len(tasks))
     uf.set = list(range(len(tasks)))
     ans = [None for _ in range(len(tasks))]
     pen = 0
@@ -138,6 +124,9 @@ def solution_with_uf(tasks):
     return ans, pen
 
 
+print(solution_with_uf(test1))
+
+
 # @timer
 def solution(tasks):
     # nothing interesting
@@ -162,8 +151,6 @@ def solution(tasks):
     return ans, pen
 
 
-# TODO:
-
 def incorrect(tasks):
     tasks.sort(key=lambda x: x.penalty, reverse=True)
     pen = 0
@@ -178,16 +165,16 @@ tests = [test1, test2] + [[Task(randint(1, 8), randint(20, 150)) for i in range(
 
 number = 0
 for test in tests:
-    print(number, end=": ")
+    # print(number, end=": ")
     # print(test)
     test_c = test.copy()
     res1 = solution_with_uf(test)
     res2 = incorrect(test_c)
     # print(res1, res2, sep="\n")
-    if res1 != res2:
-        print("False")
-    else:
-        print("True")
+    # if res1 != res2:
+    #     # print("False")
+    # else:
+    #     print("True")
     number += 1
 
 # print(solution_with_uf(test3))
